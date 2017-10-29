@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="WebApp_ID" version="3.0">
+
+    <filter>
+        <filter-name>prometheusFilter</filter-name>
+        <filter-class>io.prometheus.client.filter.MetricsFilter</filter-class>
+        <init-param>
+            <param-name>metric-name</param-name>
+            <param-value>webapp_metrics_filter</param-value>
+        </init-param>
+        <init-param>
+            <param-name>help</param-name>
+            <param-value>This is the help for your metrics filter</param-value>
+        </init-param>
+        <init-param>
+            <param-name>buckets</param-name>
+            <param-value>0.1,0.25,0.5,1,2.5,5,10</param-value>
+        </init-param>
+        <!-- Optionally override path components; anything less than 1 (1 is the default) means full granularity -->
+        <init-param>
+            <param-name>path-components</param-name>
+            <param-value>3</param-value>
+        </init-param>
+    </filter>
+
+    <servlet>
+        <description></description>
+        <display-name>PrometheusMetricsStreamServlet</display-name>
+        <servlet-name>PrometheusMetricsStreamServlet</servlet-name>
+        <servlet-class>io.prometheus.client.exporter.MetricsServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>PrometheusMetricsStreamServlet</servlet-name>
+        <url-pattern>/metrics</url-pattern>
+    </servlet-mapping>
+
+    <filter-mapping>
+        <filter-name>prometheusFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>
